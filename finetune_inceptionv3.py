@@ -1,7 +1,6 @@
 from keras import applications
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
-from keras.models import load_model
 from keras.models import Sequential, Model
 from keras.layers import Dropout, Flatten, Dense, Input
 from keras.utils import to_categorical
@@ -38,14 +37,15 @@ top_model.add(Dense(4, activation='softmax'))
 # note that it is necessary to start with a fully-trained
 # classifier, including the top classifier,
 # in order to successfully do fine-tuning
-top_model.load_weights(full_model_weights_path)
+#top_model.load_weights(full_model_weights_path)
 
 # add the model on top of the convolutional base
-model = Model(inputs=base_model.input, outputs=top_model(base_model.output))
+#model = Model(inputs=base_model.input, outputs=top_model(base_model.output))
 
 
 #load the full_model.h5 file
-#model = load_model(full_model_path)
+#model.load_weights(full_model_weights_path)
+model = load_model(full_model_path)
 
 # set the first 25 layers (up to the last conv block)
 # to non-trainable (weights will not be updated)
@@ -92,6 +92,8 @@ model.fit_generator(
     validation_data=validation_generator,
     validation_steps=nb_validation_samples)
 # print model.predict_generator(validation_generator, steps=1)
+
+model.save_weights(full_model_weights_path)
 
 model.save(full_model_path)
 
